@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shing Long | Comida China Tradicional en Monterrey</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sl': { black:'#050505', dark:'#0c0c0c', card:'#151515', card2:'#1a1a1a', border:'#252525', border2:'#333', red:'#c41e3a', 'red-light':'#e63946', 'red-dark':'#8b1428', gold:'#d4a843', 'gold-light':'#e8c468', 'gold-dark':'#b08930', cream:'#f5f0e8', muted:'#8a8580' },
+                    },
+                    fontFamily: { display:['Playfair Display','serif'], body:['Inter','sans-serif'], chinese:['Noto Serif SC','serif'] },
+                }
+            }
+        }
+    </script>
+    <style>
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family:'Inter',sans-serif; background:#050505; color:#f5f0e8; overflow-x:hidden; }
+        ::selection { background:#c41e3a; color:#fff; }
+        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar-track { background:#050505; }
+        ::-webkit-scrollbar-thumb { background:#c41e3a; border-radius:3px; }
+
+        @keyframes fadeInUp { from{opacity:0;transform:translateY(40px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+        @keyframes slideDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes shimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+        @keyframes glow { 0%,100%{box-shadow:0 0 20px rgba(196,30,58,0.3)} 50%{box-shadow:0 0 40px rgba(196,30,58,0.6)} }
+        @keyframes lanternSway { 0%,100%{transform:rotate(-3deg)} 50%{transform:rotate(3deg)} }
+
+        .animate-fadeInUp { animation: fadeInUp 0.8s ease-out forwards; }
+        .animate-fadeIn { animation: fadeIn 1s ease-out forwards; }
+        .animate-slideDown { animation: slideDown 0.5s ease-out forwards; }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+        .animate-glow { animation: glow 3s ease-in-out infinite; }
+        .animate-lantern { animation: lanternSway 4s ease-in-out infinite; transform-origin:top center; }
+
+        .reveal { opacity:0; transform:translateY(40px); transition:all 0.8s cubic-bezier(0.16,1,0.3,1); }
+        .reveal.active { opacity:1; transform:translateY(0); }
+        .reveal-delay-1 { transition-delay:0.1s; }
+        .reveal-delay-2 { transition-delay:0.2s; }
+        .reveal-delay-3 { transition-delay:0.3s; }
+        .reveal-delay-4 { transition-delay:0.4s; }
+        .reveal-delay-5 { transition-delay:0.5s; }
+
+        .gold-shimmer {
+            background: linear-gradient(90deg, #d4a843 0%, #e8c468 25%, #d4a843 50%, #e8c468 75%, #d4a843 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 4s linear infinite;
+        }
+
+        .divider-gold { display:flex; align-items:center; gap:16px; justify-content:center; }
+        .divider-gold::before, .divider-gold::after {
+            content:''; height:1px; width:80px;
+            background:linear-gradient(90deg, transparent, #d4a843, transparent);
+        }
+
+        .corner-ornament { position:relative; }
+        .corner-ornament::before, .corner-ornament::after {
+            content:''; position:absolute; width:30px; height:30px; border-color:#d4a843; opacity:0.4;
+        }
+        .corner-ornament::before { top:-1px; left:-1px; border-top:1px solid; border-left:1px solid; }
+        .corner-ornament::after { bottom:-1px; right:-1px; border-bottom:1px solid; border-right:1px solid; }
+
+        .menu-tab { position:relative; padding:10px 20px; cursor:pointer; transition:all 0.3s; color:#8a8580; font-weight:500; font-size:14px; letter-spacing:0.5px; text-transform:uppercase; white-space:nowrap; }
+        .menu-tab:hover { color:#f5f0e8; }
+        .menu-tab.active { color:#d4a843; }
+        .menu-tab.active::after { content:''; position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:60%; height:2px; background:#d4a843; border-radius:1px; }
+
+        .menu-item { transition:all 0.3s; border-bottom:1px solid rgba(255,255,255,0.04); }
+        .menu-item:hover { background:rgba(212,168,67,0.03); padding-left:8px; }
+        .menu-item:hover .item-name { color:#d4a843; }
+
+        .sig-card { position:relative; overflow:hidden; }
+        .sig-card img { transition:transform 0.7s cubic-bezier(0.16,1,0.3,1); }
+        .sig-card:hover img { transform:scale(1.08); }
+        .sig-card .overlay { transition:opacity 0.5s; }
+        .sig-card:hover .overlay { opacity:1; }
+
+        .nav-scrolled { background:rgba(5,5,5,0.95); backdrop-filter:blur(20px); border-bottom:1px solid rgba(212,168,67,0.1); }
+
+        .loc-card { transition:all 0.5s cubic-bezier(0.16,1,0.3,1); }
+        .loc-card:hover { transform:translateY(-8px); border-color:rgba(196,30,58,0.3); box-shadow:0 20px 60px -15px rgba(196,30,58,0.15); }
+
+        .hero-bg { transition:transform 0.1s linear; }
+
+        .toast {
+            position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(100px);
+            background:#1a1a1a; border:1px solid #d4a843; color:#f5f0e8; padding:14px 28px;
+            border-radius:12px; z-index:9999; transition:transform 0.5s cubic-bezier(0.16,1,0.3,1);
+            font-size:14px; box-shadow:0 10px 40px rgba(0,0,0,0.5);
+        }
+        .toast.show { transform:translateX(-50%) translateY(0); }
+
+        .mobile-menu { transform:translateX(100%); transition:transform 0.4s cubic-bezier(0.16,1,0.3,1); }
+        .mobile-menu.open { transform:translateX(0); }
+
+        .red-line { width:40px; height:2px; background:#c41e3a; }
+
+        .pattern-overlay {
+            background-image: radial-gradient(circle at 1px 1px, rgba(212,168,67,0.03) 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+
+        .scrollbar-hide::-webkit-scrollbar { display:none; }
+        .scrollbar-hide { -ms-overflow-style:none; scrollbar-width:none; }
+
+        @keyframes scrollGallery { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+        .animate-scroll { animation:scrollGallery 30s linear infinite; }
+        .animate-scroll:hover { animation-play-state:paused; }
+    </style>
+</head>
+<body>
+
+    <!-- ===================== NAVIGATION ===================== -->
+    <nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-500">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <a href="#inicio" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-full bg-sl-red flex items-center justify-center border border-sl-gold/30 group-hover:border-sl-gold/60 transition-colors">
+                        <span class="font-chinese text-white text-lg font-bold">龍</span>
+                    </div>
+                    <div>
+                        <span class="font-display text-xl font-semibold tracking-wide text-sl-cream">Shing Long</span>
+                        <span class="block text-[9px] tracking-[3px] uppercase text-sl-gold/70 font-medium">Comida China</span>
+                    </div>
+                </a>
+
+                <div class="hidden lg:flex items-center gap-10">
+                    <a href="#inicio" class="nav-link text-sm font-medium text-sl-cream/70 hover:text-sl-gold transition-colors tracking-wide">Inicio</a>
+                    <a href="#sabor" class="nav-link text-sm font-medium text-sl-cream/70 hover:text-sl-gold transition-colors tracking-wide">Tradición</a>
+                    <a href="#platillos" class="nav-link text-sm font-medium text-sl-cream/70 hover:text-sl-gold transition-colors tracking-wide">Platillos</a>
+                    <a href="#menu" class="nav-link text-sm font-medium text-sl-cream/70 hover:text-sl-gold transition-colors tracking-wide">Menú</a>
+                    <a href="#sucursales" class="nav-link text-sm font-medium text-sl-cream/70 hover:text-sl-gold transition-colors tracking-wide">Sucursales</a>
+                    <a href="#sucursales" class="ml-4 px-6 py-2.5 bg-sl-red hover:bg-sl-red-light text-white text-sm font-semibold rounded-full transition-all hover:shadow-lg hover:shadow-sl-red/25">
+                        Visítanos
+                    </a>
+                </div>
+
+                <button id="menuToggle" class="lg:hidden w-10 h-10 flex flex-col items-center justify-center gap-1.5 group">
+                    <span class="w-6 h-[1.5px] bg-sl-cream transition-all group-hover:bg-sl-gold hamburger-line"></span>
+                    <span class="w-6 h-[1.5px] bg-sl-cream transition-all group-hover:bg-sl-gold hamburger-line"></span>
+                    <span class="w-4 h-[1.5px] bg-sl-cream transition-all group-hover:bg-sl-gold group-hover:w-6 hamburger-line"></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu fixed inset-0 z-[60] bg-sl-black/98 backdrop-blur-xl flex flex-col">
+        <div class="flex items-center justify-between px-6 h-20">
+            <span class="font-display text-xl text-sl-gold">Shing Long</span>
+            <button id="menuClose" class="w-10 h-10 flex items-center justify-center text-sl-cream hover:text-sl-red transition-colors">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+        <div class="flex-1 flex flex-col items-center justify-center gap-8">
+            <a href="#inicio" class="mobile-link text-2xl font-display text-sl-cream/80 hover:text-sl-gold transition-colors">Inicio</a>
+            <a href="#sabor" class="mobile-link text-2xl font-display text-sl-cream/80 hover:text-sl-gold transition-colors">Tradición</a>
+            <a href="#platillos" class="mobile-link text-2xl font-display text-sl-cream/80 hover:text-sl-gold transition-colors">Platillos</a>
+            <a href="#menu" class="mobile-link text-2xl font-display text-sl-cream/80 hover:text-sl-gold transition-colors">Menú</a>
+            <a href="#sucursales" class="mobile-link text-2xl font-display text-sl-cream/80 hover:text-sl-gold transition-colors">Sucursales</a>
+            <a href="#sucursales" class="mt-4 px-8 py-3 bg-sl-red text-white font-semibold rounded-full">Visítanos</a>
+        </div>
+    </div>
+
+    <!-- ===================== HERO ===================== -->
+    <section id="inicio" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div class="hero-bg absolute inset-0">
+            <img src="https://picsum.photos/seed/shinglong-hero/1920/1080.jpg" alt="Shing Long Restaurante" class="w-full h-full object-cover opacity-30">
+            <div class="absolute inset-0 bg-gradient-to-b from-sl-black via-sl-black/70 to-sl-black"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-sl-black/80 via-transparent to-sl-black/80"></div>
+        </div>
+
+        <div class="absolute top-24 left-10 w-px h-32 bg-gradient-to-b from-transparent via-sl-gold/30 to-transparent hidden lg:block"></div>
+        <div class="absolute top-24 right-10 w-px h-32 bg-gradient-to-b from-transparent via-sl-gold/30 to-transparent hidden lg:block"></div>
+        <div class="absolute bottom-32 left-1/4 w-px h-20 bg-gradient-to-b from-transparent via-sl-red/20 to-transparent hidden lg:block"></div>
+        <div class="absolute bottom-32 right-1/4 w-px h-20 bg-gradient-to-b from-transparent via-sl-red/20 to-transparent hidden lg:block"></div>
+
+        <div class="absolute top-20 left-[8%] hidden xl:block animate-lantern opacity-40">
+            <svg width="30" height="50" viewBox="0 0 30 50"><ellipse cx="15" cy="25" rx="12" ry="18" fill="none" stroke="#c41e3a" stroke-width="1"/><line x1="15" y1="0" x2="15" y2="7" stroke="#d4a843" stroke-width="1"/><line x1="10" y1="43" x2="10" y2="50" stroke="#d4a843" stroke-width="0.5"/><line x1="15" y1="43" x2="15" y2="50" stroke="#d4a843" stroke-width="0.5"/><line x1="20" y1="43" x2="20" y2="50" stroke="#d4a843" stroke-width="0.5"/></svg>
+        </div>
+        <div class="absolute top-28 right-[10%] hidden xl:block animate-lantern opacity-30" style="animation-delay:-2s">
+            <svg width="24" height="42" viewBox="0 0 30 50"><ellipse cx="15" cy="25" rx="12" ry="18" fill="none" stroke="#c41e3a" stroke-width="1"/><line x1="15" y1="0" x2="15" y2="7" stroke="#d4a843" stroke-width="1"/><line x1="10" y1="43" x2="10" y2="50" stroke="#d4a843" stroke-width="0.5"/><line x1="15" y1="43" x2="15" y2="50" stroke="#d4a843" stroke-width="0.5"/><line x1="20" y1="43" x2="20" y2="50" stroke="#d4a843" stroke-width="0.5"/></svg>
+        </div>
+
+        <div class="relative z-10 text-center px-6 max-w-5xl">
+            <div class="animate-fadeIn" style="animation-delay:0.2s">
+                <div class="divider-gold mb-8">
+                    <span class="font-chinese text-sl-gold/60 text-lg tracking-widest">盛 龙</span>
+                </div>
+            </div>
+
+            <h1 class="font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-[0.95] tracking-tight mb-6 animate-fadeInUp" style="animation-delay:0.3s">
+                <span class="text-sl-cream">Shing</span>
+                <span class="gold-shimmer"> Long</span>
+            </h1>
+
+            <p class="text-sl-cream/50 text-sm sm:text-base tracking-[6px] uppercase font-medium mb-8 animate-fadeIn" style="animation-delay:0.5s">
+                Comida China Tradicional
+            </p>
+
+            <div class="red-line mx-auto mb-8 animate-fadeIn" style="animation-delay:0.6s"></div>
+
+            <p class="text-sl-cream/60 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed mb-12 animate-fadeInUp" style="animation-delay:0.7s">
+                Más de <span class="text-sl-gold font-semibold">25 años</span> llevando el auténtico sabor de China a la mesa regiomontana. Tradición, calidad y pasión en cada platillo.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fadeInUp" style="animation-delay:0.9s">
+                <a href="#menu" class="px-10 py-4 bg-sl-red hover:bg-sl-red-light text-white font-semibold rounded-full transition-all hover:shadow-xl hover:shadow-sl-red/30 hover:scale-105 text-sm tracking-wide">
+                    VER MENÚ COMPLETO
+                </a>
+                <a href="#sucursales" class="px-10 py-4 border border-sl-gold/30 hover:border-sl-gold text-sl-gold hover:bg-sl-gold/5 font-semibold rounded-full transition-all text-sm tracking-wide">
+                    VER SUCURSALES
+                </a>
+            </div>
+        </div>
+
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-fadeIn" style="animation-delay:1.5s">
+            <span class="text-[10px] tracking-[3px] uppercase text-sl-cream/30">Descubrir</span>
+            <div class="w-px h-8 bg-gradient-to-b from-sl-gold/40 to-transparent animate-float"></div>
+        </div>
+    </section>
+
+    <!-- ===================== SABOR TRADICIONAL ===================== -->
+    <section id="sabor" class="relative py-24 lg:py-36 pattern-overlay">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+                <div>
+                    <div class="reveal">
+                        <span class="text-sl-red text-xs font-semibold tracking-[4px] uppercase">Nuestra Historia</span>
+                        <div class="red-line mt-4 mb-6"></div>
+                    </div>
+
+                    <h2 class="reveal reveal-delay-1 font-display text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight mb-8">
+                        Sabor <span class="text-sl-gold">Tradicional</span><br>
+                        <span class="text-sl-cream/80 text-3xl lg:text-4xl xl:text-5xl">desde 1998</span>
+                    </h2>
+
+                    <p class="reveal reveal-delay-2 text-sl-cream/50 text-base lg:text-lg leading-relaxed mb-6">
+                        Shing Long nació de la visión de llevar los sabores auténticos de la cocina china a Monterrey. Cada receta ha sido heredada por generaciones, respetando las técnicas milenarias de wok, vapor y cocción lenta.
+                    </p>
+                    <p class="reveal reveal-delay-3 text-sl-cream/50 text-base lg:text-lg leading-relaxed mb-10">
+                        Utilizamos ingredientes frescos seleccionados diariamente, salsas preparadas en casa y especias importadas directamente de China para garantizar una experiencia gastronómica incomparable.
+                    </p>
+
+                    <div class="reveal reveal-delay-4 grid grid-cols-3 gap-6">
+                        <div class="text-center p-4 border border-sl-border rounded-xl corner-ornament">
+                            <span class="block font-display text-3xl lg:text-4xl font-bold text-sl-gold">25+</span>
+                            <span class="block text-xs text-sl-cream/40 mt-1 tracking-wide">Años</span>
+                        </div>
+                        <div class="text-center p-4 border border-sl-border rounded-xl corner-ornament">
+                            <span class="block font-display text-3xl lg:text-4xl font-bold text-sl-gold">3</span>
+                            <span class="block text-xs text-sl-cream/40 mt-1 tracking-wide">Sucursales</span>
+                        </div>
+                        <div class="text-center p-4 border border-sl-border rounded-xl corner-ornament">
+                            <span class="block font-display text-3xl lg:text-4xl font-bold text-sl-gold">80+</span>
+                            <span class="block text-xs text-sl-cream/40 mt-1 tracking-wide">Platillos</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reveal reveal-delay-2 relative">
+                    <div class="relative rounded-2xl overflow-hidden corner-ornament">
+                        <img src="wokFuego.jpg" alt="Interior Shing Long" class="w-full h-[500px] lg:h-[600px] object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-sl-black/60 via-transparent to-sl-black/20"></div>
+                    </div>
+                    <div class="absolute -bottom-6 -left-6 bg-sl-card border border-sl-gold/20 rounded-2xl p-5 shadow-2xl shadow-black/50 animate-float">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-sl-red/10 flex items-center justify-center">
+                                <i data-lucide="flame" class="w-6 h-6 text-sl-red"></i>
+                            </div>
+                            <div>
+                                <span class="block text-sl-gold font-display text-lg font-bold">Wok al Fuego</span>
+                                <span class="block text-sl-cream/40 text-xs">Técnica tradicional</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute -top-3 -right-3 w-24 h-24 border border-sl-gold/10 rounded-2xl -z-10"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== PLATILLOS ESTRELLA ===================== -->
+    <section id="platillos" class="relative py-24 lg:py-36">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-sl-red/5 rounded-full blur-[150px] pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative">
+            <div class="text-center mb-16">
+                <div class="reveal">
+                    <span class="text-sl-red text-xs font-semibold tracking-[4px] uppercase">Lo Mejor de Nuestra Cocina</span>
+                    <div class="divider-gold mt-4 mb-6">
+                        <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 0l2.5 5 5.5.8-4 3.9.9 5.3L8 12.4 3.1 15l.9-5.3-4-3.9L5.5 5z" fill="#d4a843" opacity="0.6"/></svg>
+                    </div>
+                </div>
+                <h2 class="reveal reveal-delay-1 font-display text-4xl lg:text-5xl xl:text-6xl font-bold">
+                    Platillos <span class="text-sl-gold">Estrella</span>
+                </h2>
+                <p class="reveal reveal-delay-2 text-sl-cream/40 mt-4 max-w-xl mx-auto text-base">
+                    Los favoritos que nos han dado reconocimiento en Monterrey durante más de dos décadas.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+                <!-- Dish 1 -->
+                <div class="reveal reveal-delay-1 sig-card rounded-2xl overflow-hidden bg-sl-card border border-sl-border group">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="polloSL.jpg" alt="Pollo Shing Long" class="w-full h-full object-cover">
+                        <div class="overlay absolute inset-0 bg-gradient-to-t from-sl-black via-sl-black/40 to-transparent opacity-60 flex items-end p-6">
+                            <div>
+                                <span class="text-[10px] tracking-[3px] uppercase text-sl-gold font-semibold">Firma de la Casa</span>
+                                <h3 class="font-display text-2xl font-bold text-white mt-1">Pollo Shing Long</h3>
+                            </div>
+                        </div>
+                        <div class="absolute top-4 right-4 bg-sl-red/90 backdrop-blur-sm text-white text-sm font-bold px-3 py-1 rounded-full">★ Popular</div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-sl-cream/40 text-sm leading-relaxed mb-4">Generosas piezas de pollo salteado al wok con brócoli fresco, zanahoria y nuestra salsa especial de la casa.</p>
+                        <div class="flex items-center justify-between">
+                            <span class="font-display text-2xl font-bold text-sl-gold">$145</span>
+                            <span class="text-xs text-sl-cream/30 flex items-center gap-1"><i data-lucide="flame" class="w-3 h-3 text-sl-red"></i> Recomendado</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dish 2 -->
+                <div class="reveal reveal-delay-2 sig-card rounded-2xl overflow-hidden bg-sl-card border border-sl-border group">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="arrozEs.jpg" alt="Arroz Frito Especial" class="w-full h-full object-cover">
+                        <div class="overlay absolute inset-0 bg-gradient-to-t from-sl-black via-sl-black/40 to-transparent opacity-60 flex items-end p-6">
+                            <div>
+                                <span class="text-[10px] tracking-[3px] uppercase text-sl-gold font-semibold">Clásico Irresistible</span>
+                                <h3 class="font-display text-2xl font-bold text-white mt-1">Arroz Frito Especial</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-sl-cream/40 text-sm leading-relaxed mb-4">Arroz salteado al wok con huevo, pollo, camarón, cerdo, vegetales y salsa de soya premium.</p>
+                        <div class="flex items-center justify-between">
+                            <span class="font-display text-2xl font-bold text-sl-gold">$120</span>
+                            <span class="text-xs text-sl-cream/30 flex items-center gap-1"><i data-lucide="star" class="w-3 h-3 text-sl-gold"></i> Favorito</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dish 3 -->
+                <div class="reveal reveal-delay-3 sig-card rounded-2xl overflow-hidden bg-sl-card border border-sl-border group">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://picsum.photos/seed/camarones-ajillo-wok/600/400.jpg" alt="Camarón al Ajillo" class="w-full h-full object-cover">
+                        <div class="overlay absolute inset-0 bg-gradient-to-t from-sl-black via-sl-black/40 to-transparent opacity-60 flex items-end p-6">
+                            <div>
+                                <span class="text-[10px] tracking-[3px] uppercase text-sl-gold font-semibold">Premium</span>
+                                <h3 class="font-display text-2xl font-bold text-white mt-1">Camarón al Ajillo</h3>
+                            </div>
+                        </div>
+                        <div class="absolute top-4 right-4 bg-sl-gold/90 backdrop-blur-sm text-sl-black text-sm font-bold px-3 py-1 rounded-full">★ Chef</div>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-sl-cream/40 text-sm leading-relaxed mb-4">Camarones gigantes salteados con ajo fresco, chile seco, cebollín y salsa de ostras auténtica.</p>
+                        <div class="flex items-center justify-between">
+                            <span class="font-display text-2xl font-bold text-sl-gold">$175</span>
+                            <span class="text-xs text-sl-cream/30 flex items-center gap-1"><i data-lucide="award" class="w-3 h-3 text-sl-gold"></i> Premium</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== MENÚ COMPLETO ===================== -->
+    <section id="menu" class="relative py-24 lg:py-36 pattern-overlay">
+        <div class="absolute inset-0 bg-gradient-to-b from-sl-black via-sl-dark to-sl-black pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative">
+            <div class="text-center mb-12">
+                <div class="reveal">
+                    <span class="text-sl-red text-xs font-semibold tracking-[4px] uppercase">Nuestra Oferta Gastronómica</span>
+                    <div class="divider-gold mt-4 mb-6">
+                        <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 0l2.5 5 5.5.8-4 3.9.9 5.3L8 12.4 3.1 15l.9-5.3-4-3.9L5.5 5z" fill="#d4a843" opacity="0.6"/></svg>
+                    </div>
+                </div>
+                <h2 class="reveal reveal-delay-1 font-display text-4xl lg:text-5xl xl:text-6xl font-bold">
+                    Menú <span class="text-sl-gold">Completo</span>
+                </h2>
+            </div>
+
+            <div class="reveal reveal-delay-2 flex gap-2 overflow-x-auto pb-4 mb-10 scrollbar-hide justify-start lg:justify-center" id="menuTabs">
+                <button class="menu-tab active" data-tab="aperitivos">Aperitivos</button>
+                <button class="menu-tab" data-tab="sopas">Sopas</button>
+                <button class="menu-tab" data-tab="arroces">Arroces</button>
+                <button class="menu-tab" data-tab="pollo">Pollo</button>
+                <button class="menu-tab" data-tab="res">Res</button>
+                <button class="menu-tab" data-tab="cerdo">Cerdo</button>
+                <button class="menu-tab" data-tab="mariscos">Mariscos</button>
+                <button class="menu-tab" data-tab="vegetales">Vegetales</button>
+                <button class="menu-tab" data-tab="especiales">Especiales</button>
+            </div>
+
+            <div id="menuContent" class="max-w-4xl mx-auto"></div>
+
+            <div class="reveal text-center mt-12 pt-8 border-t border-sl-border/50">
+                <p class="text-sl-cream/30 text-xs tracking-wide">
+                    * Los precios pueden variar ligeramente entre sucursales. Consulta disponibilidad al momento de tu visita.
+                </p>
+                <p class="text-sl-cream/30 text-xs tracking-wide mt-2">
+                    ** Informar sobre alergias al momento de ordenar. Algunos platillos contienen mariscos, soya, cacahuates o gluten.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== GALERÍA RÁPIDA ===================== -->
+    <section class="py-16 overflow-hidden">
+        <div class="flex gap-4 animate-scroll">
+            <img src="https://picsum.photos/seed/sl-gallery1/400/280.jpg" alt="" class="w-72 h-48 object-cover rounded-xl opacity-60 hover:opacity-100 transition-opacity flex-shrink-0">
+            <img src="https://picsum.photos/seed/sl-gallery2/400/280.jpg" alt="" class="w-72 h-48 object-cover rounded-xl opacity-60 hover:opacity-100 transition-opacity flex-shrink-0">
+            <img src="https://picsum.photos/seed/sl-gallery3/400/280.jpg" alt="" class="w-72 h-48 object-cover rounded-xl opacity-60 hover:opacity-100 transition-opacity flex-shrink-0">
+            <img src="https://picsum.photos/seed/sl-gallery4/400/280.jpg" alt="" class="w-72 h-48 object-cover rounded-xl opacity-60 hover:opacity-100 transition-opacity flex-shrink-0">
+            <img src="https://picsum.photos/seed/sl-gallery5/400/280.jpg" alt="" class="w-72 h-48 object-cover rounded-xl opacity-60 hover:opacity-100 transition-opacity flex-shrink-0">
+            <img src="https://picsum.photos/seed/sl-gallery6/400/280.jpg" alt="" class="w-72 h-48 object-cover rounded-xl opacity-60 hover:opacity-100 transition-opacity flex-shrink-0">
+            <img src="https://picsum.photos/seed/sl-gallery1/400/280.jpg" alt="" class="w-72 h-48 object-cover rounded-xl opacity-60 hover:opacity-100 transition-opacity flex-shrink-0">
+            <img src="https://picsum.photos/seed/sl-gallery2/400/280.jpg" alt="" class="w-72 h-48 object-cover rounded-xl opacity-60 hover:opacity-100 transition-opacity flex-shrink-0">
+            <img src="https://picsum.photos/seed/sl-gallery3/400/280.jpg" alt="" class="w-72 h-48 object-cover rounded-xl opacity-60 hover:opacity-100 transition-opacity flex-shrink-0">
+            <img src="https://picsum.photos/seed/sl-gallery4/400/280.jpg" alt="" class="w-72 h-48 object-cover rounded-xl opacity-60 hover:opacity-100 transition-opacity flex-shrink-0">
+            <img src="https://picsum.photos/seed/sl-gallery5/400/280.jpg" alt="" class="w-72 h-48 object-cover rounded-xl opacity-60 hover:opacity-100 transition-opacity flex-shrink-0">
+            <img src="https://picsum.photos/seed/sl-gallery6/400/280.jpg" alt="" class="w-72 h-48 object-cover rounded-xl opacity-60 hover:opacity-100 transition-opacity flex-shrink-0">
+        </div>
+    </section>
+
+    <!-- ===================== SUCURSALES ===================== -->
+    <section id="sucursales" class="relative py-24 lg:py-36">
+        <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-sl-gold/3 rounded-full blur-[150px] pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative">
+            <div class="text-center mb-16">
+                <div class="reveal">
+                    <span class="text-sl-red text-xs font-semibold tracking-[4px] uppercase">Encuéntranos</span>
+                    <div class="divider-gold mt-4 mb-6">
+                        <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 0l2.5 5 5.5.8-4 3.9.9 5.3L8 12.4 3.1 15l.9-5.3-4-3.9L5.5 5z" fill="#d4a843" opacity="0.6"/></svg>
+                    </div>
+                </div>
+                <h2 class="reveal reveal-delay-1 font-display text-4xl lg:text-5xl xl:text-6xl font-bold">
+                    Nuestras <span class="text-sl-gold">Sucursales</span>
+                </h2>
+                <p class="reveal reveal-delay-2 text-sl-cream/40 mt-4 max-w-xl mx-auto">
+                    Tres ubicaciones estratégicas en Monterrey para estar siempre cerca de ti.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Sucursal 1 -->
+                <div class="reveal reveal-delay-1 loc-card bg-sl-card border border-sl-border rounded-2xl overflow-hidden">
+                    <div class="relative h-48">
+                        <img src="sucrev.jpg" alt="Shing Long Revolución Contry" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-sl-card via-sl-card/40 to-transparent"></div>
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-sl-red/90 text-white text-[10px] font-bold tracking-wider uppercase px-3 py-1 rounded-full">Contry</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-display text-xl font-bold text-sl-cream mb-4">Shing Long Revolución / Contry</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-3">
+                                <i data-lucide="map-pin" class="w-4 h-4 text-sl-gold mt-0.5 flex-shrink-0"></i>
+                                <span class="text-sl-cream/50 text-sm leading-relaxed">Av. Revolución 3448, Contry Tesoro, Monterrey, N.L.</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="phone" class="w-4 h-4 text-sl-gold flex-shrink-0"></i>
+                                <div class="flex flex-col">
+                                    <a href="tel:+528183497027" class="text-sl-cream/50 text-sm hover:text-sl-gold transition-colors">81 8349 7027</a>
+                                    <a href="tel:+528118740488" class="text-sl-cream/50 text-sm hover:text-sl-gold transition-colors">81 1874 0488</a>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="tel:+528183497027" class="mt-6 w-full flex items-center justify-center gap-2 px-6 py-3 border border-sl-red/30 hover:bg-sl-red/10 hover:border-sl-red/50 text-sl-red rounded-xl transition-all text-sm font-semibold">
+                            <i data-lucide="phone-call" class="w-4 h-4"></i> Llamar Ahora
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Sucursal 2 -->
+                <div class="reveal reveal-delay-2 loc-card bg-sl-card border border-sl-border rounded-2xl overflow-hidden">
+                    <div class="relative h-48">
+                        <img src="succumbres.jpg" alt="Shing Long Cumbres" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-sl-card via-sl-card/40 to-transparent"></div>
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-sl-gold/90 text-sl-black text-[10px] font-bold tracking-wider uppercase px-3 py-1 rounded-full">Cumbres</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-display text-xl font-bold text-sl-cream mb-4">Shing Long Cumbres</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-3">
+                                <i data-lucide="map-pin" class="w-4 h-4 text-sl-gold mt-0.5 flex-shrink-0"></i>
+                                <span class="text-sl-cream/50 text-sm leading-relaxed">Av. Paseo de los Leones 1660, Cumbres 1er Sector, Monterrey, N.L.</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="phone" class="w-4 h-4 text-sl-gold flex-shrink-0"></i>
+                                <div class="flex flex-col">
+                                    <a href="tel:+528128716837" class="text-sl-cream/50 text-sm hover:text-sl-gold transition-colors">81 2871 6837</a>
+                                    <a href="tel:+528183489622" class="text-sl-cream/50 text-sm hover:text-sl-gold transition-colors">81 8348 9622</a>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="tel:+528128716837" class="mt-6 w-full flex items-center justify-center gap-2 px-6 py-3 border border-sl-red/30 hover:bg-sl-red/10 hover:border-sl-red/50 text-sl-red rounded-xl transition-all text-sm font-semibold">
+                            <i data-lucide="phone-call" class="w-4 h-4"></i> Llamar Ahora
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Sucursal 3 -->
+                <div class="reveal reveal-delay-3 loc-card bg-sl-card border border-sl-border rounded-2xl overflow-hidden">
+                    <div class="relative h-48">
+                        <img src="https://picsum.photos/seed/shinglong-torres/600/350.jpg" alt="Shing Long Las Torres" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-sl-card via-sl-card/40 to-transparent"></div>
+                        <div class="absolute top-4 left-4">
+                            <span class="bg-sl-red/90 text-white text-[10px] font-bold tracking-wider uppercase px-3 py-1 rounded-full">Las Torres</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-display text-xl font-bold text-sl-cream mb-4">Shing Long Las Torres</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-start gap-3">
+                                <i data-lucide="map-pin" class="w-4 h-4 text-sl-gold mt-0.5 flex-shrink-0"></i>
+                                <span class="text-sl-cream/50 text-sm leading-relaxed">Reims 135, Col. Las Torres, Monterrey, N.L.</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="phone" class="w-4 h-4 text-sl-gold flex-shrink-0"></i>
+                                <div class="flex flex-col">
+                                    <a href="tel:+528183498879" class="text-sl-cream/50 text-sm hover:text-sl-gold transition-colors">81 8349 8879</a>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="tel:+528183498879" class="mt-6 w-full flex items-center justify-center gap-2 px-6 py-3 border border-sl-red/30 hover:bg-sl-red/10 hover:border-sl-red/50 text-sl-red rounded-xl transition-all text-sm font-semibold">
+                            <i data-lucide="phone-call" class="w-4 h-4"></i> Llamar Ahora
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Horarios -->
+            <div class="reveal mt-20 bg-sl-card border border-sl-border rounded-2xl p-8 lg:p-12 corner-ornament max-w-3xl mx-auto">
+                <div class="text-center mb-8">
+                    <div class="flex items-center justify-center gap-3 mb-3">
+                        <i data-lucide="clock" class="w-5 h-5 text-sl-gold"></i>
+                        <h3 class="font-display text-2xl lg:text-3xl font-bold">Horarios</h3>
+                    </div>
+                    <div class="red-line mx-auto"></div>
+                </div>
+                <div class="space-y-4 max-w-md mx-auto">
+                    <div class="flex justify-between items-center py-4 px-5 border border-sl-border/50 rounded-xl bg-sl-black/30">
+                        <span class="text-sl-cream/70 text-sm font-medium">Lunes a Sábado</span>
+                        <span class="text-sl-gold font-display font-bold text-lg">12:00 — 10:00 p.m.</span>
+                    </div>
+                    <div class="flex justify-between items-center py-4 px-5 border border-sl-border/50 rounded-xl bg-sl-black/30">
+                        <span class="text-sl-cream/70 text-sm font-medium">Domingos</span>
+                        <span class="text-sl-red font-display font-bold text-base">Variable por sucursal</span>
+                    </div>
+                </div>
+                <p class="text-center text-sl-cream/25 text-xs mt-6 tracking-wide">
+                    Consulta el horario dominical directamente con tu sucursal más cercana.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== CTA SECTION ===================== -->
+    <section class="relative py-24 lg:py-32 overflow-hidden">
+        <div class="absolute inset-0 bg-sl-red/5"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-sl-red/10 rounded-full blur-[150px] pointer-events-none"></div>
+
+        <div class="max-w-3xl mx-auto px-6 text-center relative">
+            <div class="reveal">
+                <span class="font-chinese text-4xl text-sl-red/30 block mb-4">龍</span>
+                <h2 class="font-display text-3xl lg:text-5xl font-bold mb-6">
+                    ¿Listo para disfrutar de la<br><span class="text-sl-gold">mejor comida china</span>?
+                </h2>
+                <p class="text-sl-cream/50 text-base lg:text-lg mb-10 max-w-xl mx-auto">
+                    Visítanos en cualquiera de nuestras tres sucursales en Monterrey. El sabor auténtico de Shing Long te espera.
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="tel:+528183497027" class="px-10 py-4 bg-sl-red hover:bg-sl-red-light text-white font-semibold rounded-full transition-all hover:shadow-xl hover:shadow-sl-red/30 flex items-center gap-3">
+                        <i data-lucide="phone" class="w-5 h-5"></i> Llamar Ahora
+                    </a>
+                    <a href="#sucursales" class="px-10 py-4 border border-sl-gold/30 hover:border-sl-gold text-sl-gold hover:bg-sl-gold/5 font-semibold rounded-full transition-all flex items-center gap-3">
+                        <i data-lucide="map-pin" class="w-5 h-5"></i> Ver Sucursales
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="border-t border-sl-border/50 bg-sl-black">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+            <div class="grid md:grid-cols-4 gap-12">
+                <div class="md:col-span-1">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-full bg-sl-red flex items-center justify-center border border-sl-gold/30">
+                            <span class="font-chinese text-white text-lg font-bold">龍</span>
+                        </div>
+                        <div>
+                            <span class="font-display text-xl font-semibold text-sl-cream">Shing Long</span>
+                            <span class="block text-[9px] tracking-[3px] uppercase text-sl-gold/70">Comida China</span>
+                        </div>
+                    </div>
+                    <p class="text-sl-cream/30 text-sm leading-relaxed mb-6">Tradición, calidad y sabor auténtico desde 1998. La mejor comida china de Monterrey.</p>
+                    <div class="flex gap-3">
+                        <a href="https://facebook.com/ShingLongContryCumbres" target="_blank" class="w-10 h-10 rounded-full border border-sl-border hover:border-sl-gold/50 flex items-center justify-center transition-colors group">
+                            <i data-lucide="facebook" class="w-4 h-4 text-sl-cream/40 group-hover:text-sl-gold transition-colors"></i>
+                        </a>
+                        <a href="https://instagram.com/shinglongmx" target="_blank" class="w-10 h-10 rounded-full border border-sl-border hover:border-sl-gold/50 flex items-center justify-center transition-colors group">
+                            <i data-lucide="instagram" class="w-4 h-4 text-sl-cream/40 group-hover:text-sl-gold transition-colors"></i>
+                        </a>
+                        <a href="https://wa.me/528183497027?text=Hola,%20quiero%20hacer%20un%20pedido" target="_blank" class="w-10 h-10 rounded-full border border-sl-border hover:border-sl-gold/50 flex items-center justify-center transition-colors group">
+                            <i data-lucide="message-circle" class="w-4 h-4 text-sl-cream/40 group-hover:text-sl-gold transition-colors"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-display text-sm font-semibold tracking-wider uppercase text-sl-gold mb-6">Navegación</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#inicio" class="text-sl-cream/40 text-sm hover:text-sl-cream transition-colors">Inicio</a></li>
+                        <li><a href="#sabor" class="text-sl-cream/40 text-sm hover:text-sl-cream transition-colors">Nuestra Tradición</a></li>
+                        <li><a href="#platillos" class="text-sl-cream/40 text-sm hover:text-sl-cream transition-colors">Platillos Estrella</a></li>
+                        <li><a href="#menu" class="text-sl-cream/40 text-sm hover:text-sl-cream transition-colors">Menú Completo</a></li>
+                        <li><a href="#sucursales" class="text-sl-cream/40 text-sm hover:text-sl-cream transition-colors">Sucursales</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-display text-sm font-semibold tracking-wider uppercase text-sl-gold mb-6">Contacto</h4>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="phone" class="w-4 h-4 text-sl-red flex-shrink-0"></i>
+                            <span class="text-sl-cream/40 text-sm">Contry: 81 8349 7027</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="phone" class="w-4 h-4 text-sl-red flex-shrink-0"></i>
+                            <span class="text-sl-cream/40 text-sm">Cumbres: 81 2871 6837</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="phone" class="w-4 h-4 text-sl-red flex-shrink-0"></i>
+                            <span class="text-sl-cream/40 text-sm">Las Torres: 81 8349 8879</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="mail" class="w-4 h-4 text-sl-red flex-shrink-0"></i>
+                            <a href="mailto:contacto@shinglong.com.mx" class="text-sl-cream/40 text-sm hover:text-sl-gold transition-colors">contacto@shinglong.com.mx</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-display text-sm font-semibold tracking-wider uppercase text-sl-gold mb-6">Redes Sociales</h4>
+                    <div class="space-y-4">
+                        <a href="https://facebook.com/ShingLongContryCumbres" target="_blank" class="flex items-center gap-3 group">
+                            <div class="w-9 h-9 rounded-lg bg-[#1877f2]/10 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="facebook" class="w-4 h-4 text-[#1877f2]"></i>
+                            </div>
+                            <div>
+                                <span class="block text-sl-cream/60 text-sm group-hover:text-sl-cream transition-colors">Facebook</span>
+                                <span class="block text-sl-cream/25 text-xs">Shing Long Contry Cumbres</span>
+                            </div>
+                        </a>
+                        <a href="https://instagram.com/shinglongmx" target="_blank" class="flex items-center gap-3 group">
+                            <div class="w-9 h-9 rounded-lg bg-[#e4405f]/10 flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="instagram" class="w-4 h-4 text-[#e4405f]"></i>
+                            </div>
+                            <div>
+                                <span class="block text-sl-cream/60 text-sm group-hover:text-sl-cream transition-colors">Instagram</span>
+                                <span class="block text-sl-cream/25 text-xs">@shinglongmx</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="mt-6 p-4 bg-sl-card rounded-xl border border-sl-border">
+                        <p class="text-sl-cream/30 text-xs leading-relaxed">Aceptamos efectivo, tarjetas de crédito y débito.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-16 pt-8 border-t border-sl-border/30 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-sl-cream/20 text-xs">© 2026 Shing Long Comida China. Todos los derechos reservados.</p>
+                <p class="text-sl-cream/20 text-xs flex items-center gap-1">
+                    Hecho con <i data-lucide="heart" class="w-3 h-3 text-sl-red inline"></i> en Monterrey
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===================== FLOATING ELEMENTS =====================
+    <a href="https://wa.me/528183497027?text=Hola,%20quiero%20hacer%20un%20pedido%20a%20domicilio" target="_blank"
+       class="fixed bottom-6 right-6 z-50 w-14 h-14 bg-green-600 hover:bg-green-500 rounded-full flex items-center justify-center shadow-2xl shadow-green-600/30 transition-all hover:scale-110 animate-glow">
+        <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    </a>
+
+    <button id="backToTop" class="fixed bottom-6 left-6 z-50 w-12 h-12 bg-sl-card border border-sl-border hover:border-sl-gold/50 rounded-full flex items-center justify-center transition-all opacity-0 translate-y-4 pointer-events-none shadow-xl">
+        <i data-lucide="chevron-up" class="w-5 h-5 text-sl-gold"></i>
+    </button>
+
+    <div id="toast" class="toast"><span id="toastMsg"></span></div>
+-->
+    <!-- ===================== JAVASCRIPT ===================== -->
+    <script>
+        const menuData = {
+            aperitivos: {
+                title: 'Aperitivos', icon: 'utensils',
+                items: [
+                    { name: 'Rollos Primavera (4 pcs)', desc: 'Crujientes rollos rellenos de vegetales', price: 65 },
+                    { name: 'Wan Tones Fritos (6 pcs)', desc: 'Dumplings de cerdo y vegetales, salsa agridulce', price: 75 },
+                    { name: 'Ala de Pollo Estilo China', desc: 'Alas marinadas y fritas con salsa especial', price: 85 },
+                    { name: 'Bolas de Camarón (6 pcs)', desc: 'Camarón molido con vegetales, empanizado crujiente', price: 90 },
+                    { name: 'Aros de Cebolla', desc: 'Aros de cebolla empanizados con salsa chipotle', price: 70 },
+                    { name: 'Deditos de Queso (6 pcs)', desc: 'Tiras de queso empanizadas con salsa de mango', price: 65 },
+                    { name: 'Egg Rolls (4 pcs)', desc: 'Rollos gruesos de cerdo y vegetales', price: 75 },
+                    { name: 'Edamame con Sal', desc: 'Vainas de soya al vapor con sal marina', price: 55 },
+                ]
+            },
+            sopas: {
+                title: 'Sopas', icon: 'soup',
+                items: [
+                    { name: 'Sopa de Wan Ton', desc: 'Caldo de pollo con wan tones de cerdo', price: 75 },
+                    { name: 'Sopa de Pollo con Vegetales', desc: 'Caldo claro con pollo, brócoli y zanahoria', price: 70 },
+                    { name: 'Sopa Agridulce', desc: 'Caldo agridulce con huevo y tofu', price: 80 },
+                    { name: 'Sopa Foshou', desc: 'Sopa tradicional con pollo, hongo y bambú', price: 85 },
+                    { name: 'Sopa de Fideos', desc: 'Fideos chinos en caldo de pollo con vegetales', price: 75 },
+                    { name: 'Sopa Picante de Mariscos', desc: 'Caldo picante con camarón y pescado', price: 95 },
+                ]
+            },
+            arroces: {
+                title: 'Arroces', icon: 'wheat',
+                items: [
+                    { name: 'Arroz Frito con Huevo', desc: 'Arroz salteado con huevo y cebollín', price: 65 },
+                    { name: 'Arroz Frito Especial', desc: 'Con pollo, camarón, cerdo y vegetales', price: 120 },
+                    { name: 'Arroz Frito con Pollo', desc: 'Arroz salteado con pollo y vegetales', price: 85 },
+                    { name: 'Arroz Frito con Camarón', desc: 'Arroz salteado con camarón y ejotes', price: 105 },
+                    { name: 'Arroz Yang Chow', desc: 'Estilo cantonés con huevo, jamón y vegetales', price: 110 },
+                    { name: 'Arroz con Coco', desc: 'Arroz aromático al coco, acompañamiento', price: 55 },
+                    { name: 'Arroz Vaporizado', desc: 'Arroz blanco jazmín al vapor', price: 35 },
+                ]
+            },
+            pollo: {
+                title: 'Pollo', icon: 'drumstick',
+                items: [
+                    { name: 'Pollo Shing Long ★', desc: 'Con brócoli, zanahoria y salsa de la casa', price: 145 },
+                    { name: 'Pollo Agridulce', desc: 'Pollo crujiente con salsa agridulce y piña', price: 120 },
+                    { name: 'Pollo con Almendras', desc: 'Pollo tierno con almendras y salsa de soya', price: 130 },
+                    { name: 'Pollo al Limón', desc: 'Pollo en salsa de limón con pimiento', price: 125 },
+                    { name: 'Pollo Kung Pao', desc: 'Con cacahuates y chiles secos estilo Sichuan', price: 135 },
+                    { name: 'Pollo con Castañas', desc: 'Pollo con castañas de agua y vegetales', price: 130 },
+                    { name: 'Pollo al Curry', desc: 'Pollo en curry suave con cebolla y pimiento', price: 120 },
+                    { name: 'Pollo Tamarindo', desc: 'Pollo en salsa de tamarindo dulce-picante', price: 135 },
+                    { name: 'Pollo con Jengibre', desc: 'Salteado con jengibre fresco y cebollín', price: 125 },
+                    { name: 'Pollo Cinco Especies', desc: 'Con especias chinas tradicionales', price: 130 },
+                ]
+            },
+            res: {
+                title: 'Res', icon: 'beef',
+                items: [
+                    { name: 'Res con Vegetales', desc: 'Tiras de res salteadas con mixto de vegetales', price: 145 },
+                    { name: 'Res al Curry', desc: 'Res en curry suave con cebolla y pimiento', price: 140 },
+                    { name: 'Res en Salsa de Ostras', desc: 'Con brócoli y salsa de ostras premium', price: 150 },
+                    { name: 'Res con Cebollín', desc: 'Res salteada con cebollín y jengibre', price: 145 },
+                    { name: 'Res Agridulce', desc: 'Res crujiente con salsa agridulce', price: 140 },
+                    { name: 'Res con Pimiento', desc: 'Res salteada con pimientos tricolores', price: 145 },
+                    { name: 'Res Mongoliana', desc: 'Con cebolla y salsa de soya oscura', price: 155 },
+                ]
+            },
+            cerdo: {
+                title: 'Cerdo', icon: 'ham',
+                items: [
+                    { name: 'Cerdo Agridulce', desc: 'Cerdo crujiente bañado en salsa agridulce', price: 130 },
+                    { name: 'Cerdo con Piña', desc: 'Cerdo con piña fresca y pimiento', price: 135 },
+                    { name: 'Cerdo en Salsa de Soya', desc: 'Cerdo tierno con vegetales en soya', price: 125 },
+                    { name: 'Cerdo Dong Po', desc: 'Cerdo barriga estofado lentamente estilo Hangzhou', price: 155 },
+                    { name: 'Cerdo con Jengibre', desc: 'Cerdo salteado con jengibre y cebollín', price: 125 },
+                    { name: 'Cerdo Mu Shu', desc: 'Con huevo, col y hongo, servido con tortillas', price: 155 },
+                    { name: 'Cerdo Cinco Especies', desc: 'Con especias aromáticas chinas', price: 135 },
+                ]
+            },
+            mariscos: {
+                title: 'Mariscos', icon: 'fish',
+                items: [
+                    { name: 'Camarón al Ajillo ★', desc: 'Gigantes con ajo, chile seco y cebollín', price: 175 },
+                    { name: 'Camarón Agridulce', desc: 'Camarón empanizado con salsa agridulce', price: 155 },
+                    { name: 'Camarón con Vegetales', desc: 'Camarón con brócoli, zanahoria y bambú', price: 150 },
+                    { name: 'Camarón en Salsa de Ostras', desc: 'Con ejotes y salsa de ostras', price: 160 },
+                    { name: 'Filete de Pescado Tres Sabores', desc: 'Pescado entero en salsa agridulce-picante', price: 165 },
+                    { name: 'Camarón al Curry', desc: 'En curry suave con leche de coco', price: 160 },
+                    { name: 'Pescado al Vapor con Jengibre', desc: 'Filete al vapor con jengibre y cebollín', price: 155 },
+                    { name: 'Mixto del Mar', desc: 'Camarón, pulpo y calamar salteados', price: 195 },
+                ]
+            },
+            vegetales: {
+                title: 'Vegetales', icon: 'leaf',
+                items: [
+                    { name: 'Mixto de Vegetales', desc: 'Brócoli, zanahoria, ejote, bambú y hongo', price: 95 },
+                    { name: 'Brócoli con Pollo', desc: 'Brócoli fresco con tiras de pollo', price: 120 },
+                    { name: 'Ejotes al Ajo', desc: 'Ejotes chinos salteados con ajo', price: 90 },
+                    { name: 'Col China con Hongos', desc: 'Salteada con hongo shiitake y bambú', price: 95 },
+                    { name: 'Espárragos al Wok', desc: 'Espárragos con salsa de soya y ajonjolí', price: 115 },
+                    { name: 'Tofu con Vegetales', desc: 'Tofu salteado con mixto de vegetales', price: 85 },
+                    { name: 'Espinacas al Ajo', desc: 'Espinacas chinas salteadas con ajo', price: 85 },
+                ]
+            },
+            especiales: {
+                title: 'Especiales de la Casa', icon: 'crown',
+                items: [
+                    { name: 'Pato Pekín ★', desc: 'Pato horneado con piel crujiente, tortillas y salsa hoisin', price: 250 },
+                    { name: 'Pescado Entero a la Sal', desc: 'Pescado cocido en costra de sal con jengibre', price: 220 },
+                    { name: 'Cerdo Mu Shu', desc: 'Con huevo, col, hongo, servido con tortillas', price: 155 },
+                    { name: 'Pollo de la Casa Shing Long ★', desc: 'Receta secreta con 12 especias', price: 165 },
+                    { name: 'Res Mongoliana', desc: 'Cebolla caramelizada con salsa oscura especial', price: 155 },
+                    { name: 'Festival de Mariscos', desc: 'Camarón, pulpo, calamar y pescado para 2-3 personas', price: 380 },
+                    { name: 'Banquete Shing Long', desc: 'Para 4 personas: aperitivos, sopa, 3 platillos, arroz', price: 680 },
+                ]
+            }
+        };
+
+        function renderMenu(category) {
+            const data = menuData[category];
+            const container = document.getElementById('menuContent');
+            let html = `
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-10 h-10 rounded-xl bg-sl-red/10 flex items-center justify-center">
+                        <i data-lucide="${data.icon}" class="w-5 h-5 text-sl-red"></i>
+                    </div>
+                    <h3 class="font-display text-2xl lg:text-3xl font-bold text-sl-cream">${data.title}</h3>
+                    <span class="text-sl-cream/20 text-sm ml-auto">${data.items.length} platillos</span>
+                </div>
+                <div class="space-y-0">
+            `;
+            data.items.forEach((item, i) => {
+                const isStar = item.name.includes('★');
+                const cleanName = item.name.replace('★', '').trim();
+                html += `
+                    <div class="menu-item flex items-start justify-between py-4 px-3 rounded-lg" style="animation:fadeInUp 0.4s ease-out ${i * 0.05}s both">
+                        <div class="flex-1 pr-4">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="item-name font-medium text-sl-cream/90 text-sm lg:text-base transition-colors">${cleanName}</span>
+                                ${isStar ? '<span class="text-sl-red text-xs">★</span>' : ''}
+                                ${isStar ? '<span class="text-[9px] bg-sl-red/10 text-sl-red px-2 py-0.5 rounded-full font-semibold">ESTRELLA</span>' : ''}
+                            </div>
+                            <p class="text-sl-cream/30 text-xs lg:text-sm mt-1">${item.desc}</p>
+                        </div>
+                        <span class="font-display font-bold text-sl-gold text-base lg:text-lg whitespace-nowrap">$${item.price}</span>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        document.querySelectorAll('.menu-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                renderMenu(tab.dataset.tab);
+            });
+        });
+
+        renderMenu('aperitivos');
+
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('nav-scrolled', window.scrollY > 80);
+        });
+
+        const mobileMenu = document.getElementById('mobileMenu');
+        document.getElementById('menuToggle').addEventListener('click', () => mobileMenu.classList.add('open'));
+        document.getElementById('menuClose').addEventListener('click', () => mobileMenu.classList.remove('open'));
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+        });
+
+        const backToTop = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 600) {
+                backToTop.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+                backToTop.classList.add('opacity-100', 'translate-y-0');
+            } else {
+                backToTop.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+                backToTop.classList.remove('opacity-100', 'translate-y-0');
+            }
+        });
+        backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
+                }
+            });
+        });
+
+        lucide.createIcons();
+    </script>
+</body>
+</html>
