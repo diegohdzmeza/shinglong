@@ -215,3 +215,31 @@
             }
 
         }
+
+        @media (max-width: 767px) {
+
+            #sucursales .loc-card h3 {
+                font-size: 0.9rem;
+                line-height: 1.1;
+            }
+
+            #sucursales .loc-card span,
+            #sucursales .loc-card a {
+                font-size: 0.65rem;
+            }
+
+            #sucursales .loc-card .absolute.top-4.left-4 span {
+                font-size: 0.5rem;
+                padding: 4px 10px;
+            }
+
+            #sucursales .loc-card > div:nth-child(2) {
+                padding: 12px;
+            }
+
+            #sucursales .loc-card a.mt-6 {
+                padding: 8px 10px;
+                font-size: 0.65rem;
+            }
+
+        }
