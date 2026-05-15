@@ -192,3 +192,26 @@
             }
 
         }
+
+        @media (max-width: 767px) {
+
+            #platillos .overlay h3 {
+                font-size: 0.75rem;
+                line-height: 1;
+            }
+
+            #platillos .overlay span {
+                font-size: 0.42rem;
+                letter-spacing: 1.5px;
+            }
+
+            #platillos .absolute.top-4.right-4 {
+                font-size: 0.5rem;
+                padding: 3px 8px;
+            }
+
+            #platillos .overlay {
+                padding: 7px;
+            }
+
+        }
